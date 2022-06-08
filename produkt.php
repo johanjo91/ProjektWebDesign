@@ -1,10 +1,16 @@
 <?php
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-$link = mysqli_connect("localhost", "root", "");
-$db = mysqli_select_db($link,'projekt');
-$query = "SELECT * FROM product";
-$query_run = mysqli_query($link,$query);
-?>
+  require_once("login.php");
+
+  try{
+    $pdo=new PDO($attribute, $user, $password);
+    // echo "Lidhja me sukses";
+  }
+  catch(PDOException $e)
+  {
+    echo "Gabim i ndohur ne lidhje". $e->getMessage();
+  }
+
+ ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -15,18 +21,34 @@ $query_run = mysqli_query($link,$query);
 
   <div class="header">
     <h1>Katalog i thjeshte jastekesh</h1>
+    <nav>
+            <ul>
+              <li><a href="datatest.php" class="actual">Katalog</a></li>
+              <li><a href="search.php">Kerko Jasteke</a></li>
+
+              <li><a href="productentry.php">Shto Jastek</a></li>
+            </ul>
+          </nav>
   </div>
 <br>
-<?php while($row = mysqli_fetch_array($query_run)){
-  if ($row['id']==1) {?>
+<?php
+$idRes=$_POST['idTest'];
+        $query="SELECT * FROM product where id = $idRes  ";
+
+        if(!$result=$pdo->query($query))
+            echo "Gabim ne ekzekutim";
+        else {
+          while($row=$result->fetch(PDO::FETCH_BOTH))
+          {
 
 
+?>
  <div class="card">
 
             <img class="figure" src="<?php echo ($row['picture']); ?>" style="width:100%" />
          <h2> <?php echo $row['name']; ?></h2>
          <p class="price">$ <?php echo $row['price'];?></p>
-
+         <p class="description"> <?php echo $row['description'];?></p>
          </div>
          <br>
     <?php } }?>
